@@ -71,7 +71,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 32 "matrix.y"
+#line 33 "matrix.y"
 
     struct _matr *mat;
     struct _line *lin;

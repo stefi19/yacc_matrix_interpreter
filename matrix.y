@@ -20,6 +20,7 @@ int is_rectangular(matr *m);
 int same_dimensions(matr *m1, matr *m2);
 struct _matr add_matrix(struct _matr m1, struct _matr m2);
 struct _matr subtract_matrix(struct _matr m1, struct _matr m2);
+struct _matr multiply_matrix(struct _matr m1, struct _matr m2);
 struct _matr create_matrix(struct _line l);
 struct _matr add_row(struct _matr m, struct _line l);
 struct _line insert_nr_in_row(struct _line l, int nr);
@@ -45,6 +46,7 @@ void yyerror(const char *s){ fprintf(stderr,"Error: %s\n",s); }
 
 //define the order of priorities
 %left '+' '-'
+%left '*'
 
 %%
 file: file stmt '\n'
@@ -63,6 +65,7 @@ stmt: VAR '=' matrix ';' {
     ;
 expr : expr '+' expr {$$=malloc(sizeof(matr)); *$$ = add_matrix(*$1,*$3);}
     | expr '-' expr {$$=malloc(sizeof(matr)); *$$ = subtract_matrix(*$1,*$3);}
+    | expr '*' expr {$$=malloc(sizeof(matr)); *$$ = multiply_matrix(*$1,*$3);}
     | VAR {
         if (mem[$1] == NULL) {
             yyerror("Undefined matrix variable");
@@ -181,6 +184,38 @@ struct _matr subtract_matrix(struct _matr m1, struct _matr m2) {
             result.rows[i]->elems[j] = m1.rows[i]->elems[j] - m2.rows[i]->elems[j];
         }
     }
+    return result;
+}
+
+struct _matr multiply_matrix(struct _matr m1, struct _matr m2) {
+    struct _matr result;
+    result.no_rows_used = 0;
+
+    if (!is_rectangular(&m1) || !is_rectangular(&m2)) {
+        yyerror("Invalid matrix");
+        return result;
+    }
+
+    int m1_cols = m1.rows[0]->no_columns_used;
+    int m2_cols = m2.rows[0]->no_columns_used;
+    if (m1_cols != m2.no_rows_used) {
+        yyerror("Matrix dimensions are incompatible for multiplication");
+        return result;
+    }
+
+    result.no_rows_used = m1.no_rows_used;
+    for (int i = 0; i < m1.no_rows_used; i++) {
+        result.rows[i] = (line *)malloc(sizeof(line));
+        result.rows[i]->no_columns_used = m2_cols;
+        for (int j = 0; j < m2_cols; j++) {
+            int sum = 0;
+            for (int k = 0; k < m1_cols; k++) {
+                sum += m1.rows[i]->elems[k] * m2.rows[k]->elems[j];
+            }
+            result.rows[i]->elems[j] = sum;
+        }
+    }
+
     return result;
 }
 
