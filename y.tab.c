@@ -199,12 +199,14 @@ enum yysymbol_kind_t
   YYSYMBOL_9_ = 9,                         /* '='  */
   YYSYMBOL_10_ = 10,                       /* ';'  */
   YYSYMBOL_11_ = 11,                       /* '|'  */
-  YYSYMBOL_YYACCEPT = 12,                  /* $accept  */
-  YYSYMBOL_file = 13,                      /* file  */
-  YYSYMBOL_stmt = 14,                      /* stmt  */
-  YYSYMBOL_expr = 15,                      /* expr  */
-  YYSYMBOL_matrix = 16,                    /* matrix  */
-  YYSYMBOL_row = 17                        /* row  */
+  YYSYMBOL_12_ = 12,                       /* '('  */
+  YYSYMBOL_13_ = 13,                       /* ')'  */
+  YYSYMBOL_YYACCEPT = 14,                  /* $accept  */
+  YYSYMBOL_file = 15,                      /* file  */
+  YYSYMBOL_stmt = 16,                      /* stmt  */
+  YYSYMBOL_expr = 17,                      /* expr  */
+  YYSYMBOL_matrix = 18,                    /* matrix  */
+  YYSYMBOL_row = 19                        /* row  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -532,16 +534,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   26
+#define YYLAST   33
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  12
+#define YYNTOKENS  14
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  15
+#define YYNRULES  16
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  28
+#define YYNSTATES  31
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   259
@@ -562,7 +564,7 @@ static const yytype_int8 yytranslate[] =
        8,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     7,     5,     2,     6,     2,     2,     2,     2,
+      12,    13,     7,     5,     2,     6,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,    10,
        2,     9,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -591,7 +593,7 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int8 yyrline[] =
 {
        0,    52,    52,    53,    54,    56,    63,    64,    66,    67,
-      68,    69,    79,    84,    90,    91
+      68,    69,    70,    80,    85,    91,    92
 };
 #endif
 
@@ -608,8 +610,8 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "NUMBER", "VAR", "'+'",
-  "'-'", "'*'", "'\\n'", "'='", "';'", "'|'", "$accept", "file", "stmt",
-  "expr", "matrix", "row", YY_NULLPTR
+  "'-'", "'*'", "'\\n'", "'='", "';'", "'|'", "'('", "')'", "$accept",
+  "file", "stmt", "expr", "matrix", "row", YY_NULLPTR
 };
 
 static const char *
@@ -633,9 +635,10 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -5,     0,    -5,    10,    -5,     5,    -3,    11,    17,    -5,
-      -4,    -5,     5,     5,     5,    -5,    -5,     2,    19,    13,
-      18,    18,    -5,    17,    -5,    -5,    -5,    19
+      -5,     0,    -5,     4,    -5,     6,     6,    -3,    17,    11,
+      -5,    14,    -4,    -5,     6,     6,     6,    -5,    -5,    18,
+      26,    20,    -5,    24,    24,    -5,    11,    -5,    -5,    -5,
+      26
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -643,21 +646,22 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       4,     0,     1,    11,     3,     0,     0,     0,     0,    11,
-       0,     2,     0,     0,     0,     6,    15,     0,    13,     0,
-       8,     9,    10,     0,     5,    14,     7,    12
+       4,     0,     1,    12,     3,     0,     0,     0,     0,     0,
+      12,     0,     0,     2,     0,     0,     0,     6,    16,     0,
+      14,     0,    11,     8,     9,    10,     0,     5,    15,     7,
+      13
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    -5,    -5,     1,    -5,     3
+      -5,    -5,    -5,     1,    -5,     7
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     1,     6,     7,    17,    18
+       0,     1,     7,     8,    19,    20
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -665,39 +669,42 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       2,    12,    13,    14,     3,    11,    10,    19,     4,     9,
-      23,     5,    24,    20,    21,    22,    12,    13,    14,     8,
-      16,    15,    25,    26,     0,    14,    27
+       2,    14,    15,    16,     3,    13,    11,    12,     4,    22,
+      10,     5,     6,     9,    18,    23,    24,    25,     6,    14,
+      15,    16,    14,    15,    16,    21,    26,    17,    27,    28,
+      29,    16,     0,    30
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     5,     6,     7,     4,     8,     5,    11,     8,     4,
-       8,    11,    10,    12,    13,    14,     5,     6,     7,     9,
-       3,    10,     3,    10,    -1,     7,    23
+       0,     5,     6,     7,     4,     8,     5,     6,     8,    13,
+       4,    11,    12,     9,     3,    14,    15,    16,    12,     5,
+       6,     7,     5,     6,     7,    11,     8,    10,    10,     3,
+      10,     7,    -1,    26
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    13,     0,     4,     8,    11,    14,    15,     9,     4,
-      15,     8,     5,     6,     7,    10,     3,    16,    17,    11,
-      15,    15,    15,     8,    10,     3,    10,    17
+       0,    15,     0,     4,     8,    11,    12,    16,    17,     9,
+       4,    17,    17,     8,     5,     6,     7,    10,     3,    18,
+      19,    11,    13,    17,    17,    17,     8,    10,     3,    10,
+      19
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    12,    13,    13,    13,    14,    14,    14,    15,    15,
-      15,    15,    16,    16,    17,    17
+       0,    14,    15,    15,    15,    16,    16,    16,    17,    17,
+      17,    17,    17,    18,    18,    19,    19
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     3,     2,     0,     4,     2,     4,     3,     3,
-       3,     1,     3,     1,     2,     1
+       3,     3,     1,     3,     1,     2,     1
 };
 
 
@@ -1169,41 +1176,47 @@ yyreduce:
         }
         mem[(yyvsp[-3].ival)] = (yyvsp[-1].mat);
     }
-#line 1173 "y.tab.c"
+#line 1180 "y.tab.c"
     break;
 
   case 6: /* stmt: expr ';'  */
 #line 63 "matrix.y"
                {print_matrix((yyvsp[-1].mat));}
-#line 1179 "y.tab.c"
+#line 1186 "y.tab.c"
     break;
 
   case 7: /* stmt: '|' expr '|' ';'  */
 #line 64 "matrix.y"
                        {printf("%d\n", determinant((yyvsp[-2].mat)));}
-#line 1185 "y.tab.c"
+#line 1192 "y.tab.c"
     break;
 
   case 8: /* expr: expr '+' expr  */
 #line 66 "matrix.y"
                      {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = add_matrix(*(yyvsp[-2].mat),*(yyvsp[0].mat));}
-#line 1191 "y.tab.c"
+#line 1198 "y.tab.c"
     break;
 
   case 9: /* expr: expr '-' expr  */
 #line 67 "matrix.y"
                     {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = subtract_matrix(*(yyvsp[-2].mat),*(yyvsp[0].mat));}
-#line 1197 "y.tab.c"
+#line 1204 "y.tab.c"
     break;
 
   case 10: /* expr: expr '*' expr  */
 #line 68 "matrix.y"
                     {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = multiply_matrix(*(yyvsp[-2].mat),*(yyvsp[0].mat));}
-#line 1203 "y.tab.c"
+#line 1210 "y.tab.c"
     break;
 
-  case 11: /* expr: VAR  */
+  case 11: /* expr: '(' expr ')'  */
 #line 69 "matrix.y"
+                   {(yyval.mat) = (yyvsp[-1].mat);}
+#line 1216 "y.tab.c"
+    break;
+
+  case 12: /* expr: VAR  */
+#line 70 "matrix.y"
           {
         if (mem[(yyvsp[0].ival)] == NULL) {
             yyerror("Undefined matrix variable");
@@ -1213,43 +1226,43 @@ yyreduce:
             (yyval.mat) = mem[(yyvsp[0].ival)];
         }
     }
-#line 1217 "y.tab.c"
+#line 1230 "y.tab.c"
     break;
 
-  case 12: /* matrix: matrix '\n' row  */
-#line 79 "matrix.y"
+  case 13: /* matrix: matrix '\n' row  */
+#line 80 "matrix.y"
                          {
         (yyval.mat) = malloc(sizeof(matr));
         *(yyval.mat) = add_row(*(yyvsp[-2].mat),*(yyvsp[0].lin));
         free((yyvsp[0].lin));
     }
-#line 1227 "y.tab.c"
+#line 1240 "y.tab.c"
     break;
 
-  case 13: /* matrix: row  */
-#line 84 "matrix.y"
+  case 14: /* matrix: row  */
+#line 85 "matrix.y"
           {
         (yyval.mat) = malloc(sizeof(matr));
         *(yyval.mat) = create_matrix(*(yyvsp[0].lin));
         free((yyvsp[0].lin));
     }
-#line 1237 "y.tab.c"
+#line 1250 "y.tab.c"
     break;
 
-  case 14: /* row: row NUMBER  */
-#line 90 "matrix.y"
-                 {(yyval.lin)=malloc(sizeof(line)); *(yyval.lin) = insert_nr_in_row(*(yyvsp[-1].lin),(yyvsp[0].ival));}
-#line 1243 "y.tab.c"
-    break;
-
-  case 15: /* row: NUMBER  */
+  case 15: /* row: row NUMBER  */
 #line 91 "matrix.y"
+                 {(yyval.lin)=malloc(sizeof(line)); *(yyval.lin) = insert_nr_in_row(*(yyvsp[-1].lin),(yyvsp[0].ival));}
+#line 1256 "y.tab.c"
+    break;
+
+  case 16: /* row: NUMBER  */
+#line 92 "matrix.y"
              {(yyval.lin)=malloc(sizeof(line)); *(yyval.lin) = create_row((yyvsp[0].ival));}
-#line 1249 "y.tab.c"
+#line 1262 "y.tab.c"
     break;
 
 
-#line 1253 "y.tab.c"
+#line 1266 "y.tab.c"
 
       default: break;
     }
@@ -1442,7 +1455,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 94 "matrix.y"
+#line 95 "matrix.y"
 
 
 void print_matrix(matr *m) {

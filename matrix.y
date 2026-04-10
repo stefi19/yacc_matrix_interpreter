@@ -66,6 +66,7 @@ stmt: VAR '=' matrix ';' {
 expr : expr '+' expr {$$=malloc(sizeof(matr)); *$$ = add_matrix(*$1,*$3);}
     | expr '-' expr {$$=malloc(sizeof(matr)); *$$ = subtract_matrix(*$1,*$3);}
     | expr '*' expr {$$=malloc(sizeof(matr)); *$$ = multiply_matrix(*$1,*$3);}
+    | '(' expr ')' {$$ = $2;}
     | VAR {
         if (mem[$1] == NULL) {
             yyerror("Undefined matrix variable");
