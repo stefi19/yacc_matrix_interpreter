@@ -85,16 +85,20 @@ typedef struct _matr {
     matr *mem[26];
     //function prototypes
 void print_matrix(matr *m);
+void free_matrix(matr *m);
+int is_rectangular(matr *m);
+int same_dimensions(matr *m1, matr *m2);
 struct _matr add_matrix(struct _matr m1, struct _matr m2);
 struct _matr subtract_matrix(struct _matr m1, struct _matr m2);
 struct _matr create_matrix(struct _line l);
 struct _matr add_row(struct _matr m, struct _line l);
 struct _line insert_nr_in_row(struct _line l, int nr);
 struct _line create_row(int nr);
+int determinant(matr *m);
 int yylex(void);
 void yyerror(const char *s){ fprintf(stderr,"Error: %s\n",s); }
 
-#line 98 "y.tab.c"
+#line 102 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -155,14 +159,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 28 "matrix.y"
+#line 32 "matrix.y"
 
     struct _matr *mat;
     struct _line *lin;
     int ival;
     
 
-#line 166 "y.tab.c"
+#line 170 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -192,12 +196,13 @@ enum yysymbol_kind_t
   YYSYMBOL_7_n_ = 7,                       /* '\n'  */
   YYSYMBOL_8_ = 8,                         /* '='  */
   YYSYMBOL_9_ = 9,                         /* ';'  */
-  YYSYMBOL_YYACCEPT = 10,                  /* $accept  */
-  YYSYMBOL_file = 11,                      /* file  */
-  YYSYMBOL_stmt = 12,                      /* stmt  */
-  YYSYMBOL_expr = 13,                      /* expr  */
-  YYSYMBOL_matrix = 14,                    /* matrix  */
-  YYSYMBOL_row = 15                        /* row  */
+  YYSYMBOL_10_ = 10,                       /* '|'  */
+  YYSYMBOL_YYACCEPT = 11,                  /* $accept  */
+  YYSYMBOL_file = 12,                      /* file  */
+  YYSYMBOL_stmt = 13,                      /* stmt  */
+  YYSYMBOL_expr = 14,                      /* expr  */
+  YYSYMBOL_matrix = 15,                    /* matrix  */
+  YYSYMBOL_row = 16                        /* row  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -525,16 +530,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   16
+#define YYLAST   23
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  10
+#define YYNTOKENS  11
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  13
+#define YYNRULES  14
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  22
+#define YYNSTATES  26
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   259
@@ -563,7 +568,7 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,    10,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -583,8 +588,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    48,    48,    49,    50,    52,    53,    55,    56,    57,
-      59,    60,    62,    63
+       0,    50,    50,    51,    52,    54,    61,    62,    64,    65,
+      66,    76,    81,    87,    88
 };
 #endif
 
@@ -601,7 +606,7 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "NUMBER", "VAR", "'+'",
-  "'-'", "'\\n'", "'='", "';'", "$accept", "file", "stmt", "expr",
+  "'-'", "'\\n'", "'='", "';'", "'|'", "$accept", "file", "stmt", "expr",
   "matrix", "row", YY_NULLPTR
 };
 
@@ -612,7 +617,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-6)
+#define YYPACT_NINF (-5)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -626,9 +631,9 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -6,     0,    -6,    -5,    -6,     2,    -4,     9,    -6,    10,
-      10,    -6,    -6,    -1,    12,    -6,    -6,    -6,     9,    -6,
-      -6,    12
+      -5,     0,    -5,     5,    -5,     1,     7,    -3,    15,    -5,
+       6,    -5,     1,     1,    -5,    -5,     8,    16,    11,    -5,
+      -5,    15,    -5,    -5,    -5,    16
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -636,21 +641,21 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       4,     0,     1,     9,     3,     0,     0,     0,     2,     0,
-       0,     6,    13,     0,    11,     9,     7,     8,     0,     5,
-      12,    10
+       4,     0,     1,    10,     3,     0,     0,     0,     0,    10,
+       0,     2,     0,     0,     6,    14,     0,    12,     0,     8,
+       9,     0,     5,    13,     7,    11
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -6,    -6,    -6,     1,    -6,    -2
+      -5,    -5,    -5,    -4,    -5,     2
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     1,     5,     6,    13,    14
+       0,     1,     6,     7,    16,    17
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -658,37 +663,39 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       2,     9,    10,     7,     3,    11,    18,     4,    19,     8,
-      16,    17,    12,     0,    15,    20,    21
+       2,    10,    12,    13,     3,     9,    14,     4,    19,    20,
+       5,    12,    13,     8,    11,    21,    18,    22,    15,    23,
+      24,     0,     0,    25
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     5,     6,     8,     4,     9,     7,     7,     9,     7,
-       9,    10,     3,    -1,     4,     3,    18
+       0,     5,     5,     6,     4,     4,     9,     7,    12,    13,
+      10,     5,     6,     8,     7,     7,    10,     9,     3,     3,
+       9,    -1,    -1,    21
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    11,     0,     4,     7,    12,    13,     8,     7,     5,
-       6,     9,     3,    14,    15,     4,    13,    13,     7,     9,
-       3,    15
+       0,    12,     0,     4,     7,    10,    13,    14,     8,     4,
+      14,     7,     5,     6,     9,     3,    15,    16,    10,    14,
+      14,     7,     9,     3,     9,    16
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    10,    11,    11,    11,    12,    12,    13,    13,    13,
-      14,    14,    15,    15
+       0,    11,    12,    12,    12,    13,    13,    13,    14,    14,
+      14,    15,    15,    16,    16
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     3,     2,     0,     4,     2,     3,     3,     1,
-       3,     1,     2,     1
+       0,     2,     3,     2,     0,     4,     2,     4,     3,     3,
+       1,     3,     1,     2,     1
 };
 
 
@@ -1152,61 +1159,89 @@ yyreduce:
   switch (yyn)
     {
   case 5: /* stmt: VAR '=' matrix ';'  */
-#line 52 "matrix.y"
-                         {mem[(yyvsp[-3].ival)]=(yyvsp[-1].mat);}
-#line 1158 "y.tab.c"
+#line 54 "matrix.y"
+                         {
+        if (mem[(yyvsp[-3].ival)] != NULL) {
+            free_matrix(mem[(yyvsp[-3].ival)]);
+            free(mem[(yyvsp[-3].ival)]);
+        }
+        mem[(yyvsp[-3].ival)] = (yyvsp[-1].mat);
+    }
+#line 1171 "y.tab.c"
     break;
 
   case 6: /* stmt: expr ';'  */
-#line 53 "matrix.y"
+#line 61 "matrix.y"
                {print_matrix((yyvsp[-1].mat));}
-#line 1164 "y.tab.c"
+#line 1177 "y.tab.c"
     break;
 
-  case 7: /* expr: expr '+' expr  */
-#line 55 "matrix.y"
-                     {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = add_matrix(*(yyvsp[-2].mat),*(yyvsp[0].mat));}
-#line 1170 "y.tab.c"
-    break;
-
-  case 8: /* expr: expr '-' expr  */
-#line 56 "matrix.y"
-                    {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = subtract_matrix(*(yyvsp[-2].mat),*(yyvsp[0].mat));}
-#line 1176 "y.tab.c"
-    break;
-
-  case 9: /* expr: VAR  */
-#line 57 "matrix.y"
-          {(yyval.mat)=mem[(yyvsp[0].ival)];}
-#line 1182 "y.tab.c"
-    break;
-
-  case 10: /* matrix: matrix '\n' row  */
-#line 59 "matrix.y"
-                         {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = add_row(*(yyvsp[-2].mat),*(yyvsp[0].lin));}
-#line 1188 "y.tab.c"
-    break;
-
-  case 11: /* matrix: row  */
-#line 60 "matrix.y"
-          {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = create_matrix(*(yyvsp[0].lin));}
-#line 1194 "y.tab.c"
-    break;
-
-  case 12: /* row: row NUMBER  */
+  case 7: /* stmt: '|' expr '|' ';'  */
 #line 62 "matrix.y"
+                       {printf("%d\n", determinant((yyvsp[-2].mat)));}
+#line 1183 "y.tab.c"
+    break;
+
+  case 8: /* expr: expr '+' expr  */
+#line 64 "matrix.y"
+                     {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = add_matrix(*(yyvsp[-2].mat),*(yyvsp[0].mat));}
+#line 1189 "y.tab.c"
+    break;
+
+  case 9: /* expr: expr '-' expr  */
+#line 65 "matrix.y"
+                    {(yyval.mat)=malloc(sizeof(matr)); *(yyval.mat) = subtract_matrix(*(yyvsp[-2].mat),*(yyvsp[0].mat));}
+#line 1195 "y.tab.c"
+    break;
+
+  case 10: /* expr: VAR  */
+#line 66 "matrix.y"
+          {
+        if (mem[(yyvsp[0].ival)] == NULL) {
+            yyerror("Undefined matrix variable");
+            (yyval.mat) = malloc(sizeof(matr));
+            (yyval.mat)->no_rows_used = 0;
+        } else {
+            (yyval.mat) = mem[(yyvsp[0].ival)];
+        }
+    }
+#line 1209 "y.tab.c"
+    break;
+
+  case 11: /* matrix: matrix '\n' row  */
+#line 76 "matrix.y"
+                         {
+        (yyval.mat) = malloc(sizeof(matr));
+        *(yyval.mat) = add_row(*(yyvsp[-2].mat),*(yyvsp[0].lin));
+        free((yyvsp[0].lin));
+    }
+#line 1219 "y.tab.c"
+    break;
+
+  case 12: /* matrix: row  */
+#line 81 "matrix.y"
+          {
+        (yyval.mat) = malloc(sizeof(matr));
+        *(yyval.mat) = create_matrix(*(yyvsp[0].lin));
+        free((yyvsp[0].lin));
+    }
+#line 1229 "y.tab.c"
+    break;
+
+  case 13: /* row: row NUMBER  */
+#line 87 "matrix.y"
                  {(yyval.lin)=malloc(sizeof(line)); *(yyval.lin) = insert_nr_in_row(*(yyvsp[-1].lin),(yyvsp[0].ival));}
-#line 1200 "y.tab.c"
+#line 1235 "y.tab.c"
     break;
 
-  case 13: /* row: NUMBER  */
-#line 63 "matrix.y"
+  case 14: /* row: NUMBER  */
+#line 88 "matrix.y"
              {(yyval.lin)=malloc(sizeof(line)); *(yyval.lin) = create_row((yyvsp[0].ival));}
-#line 1206 "y.tab.c"
+#line 1241 "y.tab.c"
     break;
 
 
-#line 1210 "y.tab.c"
+#line 1245 "y.tab.c"
 
       default: break;
     }
@@ -1399,10 +1434,15 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 66 "matrix.y"
+#line 91 "matrix.y"
 
 
 void print_matrix(matr *m) {
+    if (m == NULL || m->no_rows_used == 0) {
+        yyerror("Empty matrix");
+        return;
+    }
+
     for (int i = 0; i < m->no_rows_used; i++) {
         for (int j = 0; j < m->rows[i]->no_columns_used; j++) {
             printf("%d ", m->rows[i]->elems[j]);
@@ -1411,8 +1451,55 @@ void print_matrix(matr *m) {
     }
 }
 
+void free_matrix(matr *m) {
+    if (m == NULL) {
+        return;
+    }
+
+    for (int i = 0; i < m->no_rows_used; i++) {
+        free(m->rows[i]);
+        m->rows[i] = NULL;
+    }
+    m->no_rows_used = 0;
+}
+
+int is_rectangular(matr *m) {
+    if (m == NULL || m->no_rows_used <= 0 || m->no_rows_used > MAX || m->rows[0] == NULL) {
+        return 0;
+    }
+
+    int cols = m->rows[0]->no_columns_used;
+    if (cols <= 0 || cols > MAX) {
+        return 0;
+    }
+
+    for (int i = 0; i < m->no_rows_used; i++) {
+        if (m->rows[i] == NULL || m->rows[i]->no_columns_used != cols) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int same_dimensions(matr *m1, matr *m2) {
+    if (!is_rectangular(m1) || !is_rectangular(m2)) {
+        return 0;
+    }
+
+    return m1->no_rows_used == m2->no_rows_used &&
+           m1->rows[0]->no_columns_used == m2->rows[0]->no_columns_used;
+}
+
 struct _matr add_matrix(struct _matr m1, struct _matr m2) {
     struct _matr result;
+    result.no_rows_used = 0;
+
+    if (!same_dimensions(&m1, &m2)) {
+        yyerror("Matrix dimensions must match for addition");
+        return result;
+    }
+
     result.no_rows_used = m1.no_rows_used;
     for (int i = 0; i < m1.no_rows_used; i++) {
         result.rows[i] = (line *)malloc(sizeof(line));
@@ -1426,6 +1513,13 @@ struct _matr add_matrix(struct _matr m1, struct _matr m2) {
 
 struct _matr subtract_matrix(struct _matr m1, struct _matr m2) {
     struct _matr result;
+    result.no_rows_used = 0;
+
+    if (!same_dimensions(&m1, &m2)) {
+        yyerror("Matrix dimensions must match for subtraction");
+        return result;
+    }
+
     result.no_rows_used = m1.no_rows_used;
     for (int i = 0; i < m1.no_rows_used; i++) {
         result.rows[i] = (line *)malloc(sizeof(line));
@@ -1439,6 +1533,13 @@ struct _matr subtract_matrix(struct _matr m1, struct _matr m2) {
 
 struct _matr create_matrix(struct _line l) {
     struct _matr m;
+    m.no_rows_used = 0;
+
+    if (l.no_columns_used <= 0 || l.no_columns_used > MAX) {
+        yyerror("Invalid row size");
+        return m;
+    }
+
     m.no_rows_used = 1;
     m.rows[0] = (line *)malloc(sizeof(line));
     m.rows[0]->no_columns_used = l.no_columns_used;
@@ -1449,6 +1550,15 @@ struct _matr create_matrix(struct _line l) {
 }
 
 struct _matr add_row(struct _matr m, struct _line l) {
+    if (m.no_rows_used <= 0 || m.no_rows_used >= MAX) {
+        yyerror("Too many rows in matrix");
+        return m;
+    }
+    if (l.no_columns_used != m.rows[0]->no_columns_used) {
+        yyerror("All matrix rows must have the same number of columns");
+        return m;
+    }
+
     m.rows[m.no_rows_used] = (line *)malloc(sizeof(line));
     m.rows[m.no_rows_used]->no_columns_used = l.no_columns_used;
     for (int i = 0; i < l.no_columns_used; i++) {
@@ -1459,6 +1569,11 @@ struct _matr add_row(struct _matr m, struct _line l) {
 }
 
 struct _line insert_nr_in_row(struct _line l, int nr) {
+    if (l.no_columns_used >= MAX) {
+        yyerror("Too many columns in row");
+        return l;
+    }
+
     l.elems[l.no_columns_used] = nr;
     l.no_columns_used++;
     return l;
@@ -1469,4 +1584,41 @@ struct _line create_row(int nr) {
     l.no_columns_used = 1;
     l.elems[0] = nr;
     return l;
+}
+
+int determinant(matr *m) {
+    if (!is_rectangular(m)) {
+        yyerror("Invalid matrix");
+        return 0;
+    }
+    if (m->no_rows_used != m->rows[0]->no_columns_used) {
+        yyerror("Determinant is defined only for square matrices");
+        return 0;
+    }
+
+    if (m->no_rows_used == 1) {
+        return m->rows[0]->elems[0];
+    } else if (m->no_rows_used == 2) {
+        return m->rows[0]->elems[0] * m->rows[1]->elems[1] - m->rows[0]->elems[1] * m->rows[1]->elems[0];
+    } else {
+        int det = 0;
+        for (int i = 0; i < m->rows[0]->no_columns_used; i++) {
+            matr submatrix;
+            submatrix.no_rows_used = m->no_rows_used - 1;
+            for (int j = 1; j < m->no_rows_used; j++) {
+                submatrix.rows[j - 1] = (line *)malloc(sizeof(line));
+                submatrix.rows[j - 1]->no_columns_used = m->rows[j]->no_columns_used - 1;
+                for (int k = 0; k < m->rows[j]->no_columns_used; k++) {
+                    if (k < i) {
+                        submatrix.rows[j - 1]->elems[k] = m->rows[j]->elems[k];
+                    } else if (k > i) {
+                        submatrix.rows[j - 1]->elems[k - 1] = m->rows[j]->elems[k];
+                    }
+                }
+            }
+            det += (i % 2 == 0 ? 1 : -1) * m->rows[0]->elems[i] * determinant(&submatrix);
+            free_matrix(&submatrix);
+        }
+        return det;
+    }
 }
